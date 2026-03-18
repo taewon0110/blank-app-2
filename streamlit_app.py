@@ -272,129 +272,74 @@ with tab1:
                 <div class="kpi-value">{val}</div><div class="kpi-sub">{sub}</div></div>""",unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════
-# TAB 2 : 군사 배치도
+# TAB 2 : 군사 배치도 (Tactical Map)
 # ════════════════════════════════════════════════════════
 with tab2:
-    st.markdown("#### 🪖 미군·이란군 군사 배치도 (2026.03.18 기준)")
-    deploy_col,legend_col=st.columns([3,1])
+    st.markdown("#### 🪖 작전 전술 지도: 진형 배치 및 유조선 현황")
+    st.caption("※ 아이콘 1개 = 수십 대의 자산(편대/전대/대대/상선단)을 의미하는 전술 지도 양식입니다.")
+    deploy_col, legend_col = st.columns([3, 1])
     with deploy_col:
-        layer_opts=st.multiselect("표시 레이어",
-            ["🔵 미군 확인 배치 (팩트)","🔵 미군 예측 배치","🔴 이란군 확인 배치 (팩트)","🟠 이란군 예측 배치"],
-            default=["🔵 미군 확인 배치 (팩트)","🔵 미군 예측 배치","🔴 이란군 확인 배치 (팩트)","🟠 이란군 예측 배치"])
-        us_confirmed=[
-            dict(lat=21.0,lon=60.0,name="USS Abraham Lincoln (CVN-72)",sz=22,note="아라비아해 오만 연안 | 1월 배치 확인 (Wikipedia)"),
-            dict(lat=28.0,lon=35.0,name="USS Gerald R. Ford (CVN-78)",sz=22,note="홍해 작전 | 3/5 수에즈 운하 통과 (Reuters)"),
-            dict(lat=25.11,lon=51.31,name="Al Udeid AB (카타르) — CENTCOM 전방사령부",sz=20,note="PAC-3 배치 | 이란 미사일 공격 (CENTCOM)"),
-            dict(lat=26.19,lon=50.59,name="NSA Juffair (바레인) — 5함대사령부",sz=18,note="이란 드론 공격 피해 (Times of Israel)"),
-            dict(lat=29.37,lon=47.98,name="Camp Arifjan + Ali Al Salem AB (쿠웨이트)",sz=18,note="미 육군중부사 전방HQ | 이란 타격 (IndianExpress)"),
-            dict(lat=24.25,lon=55.61,name="Al Dhafra AB (UAE) — 380 AEW",sz=18,note="이란 드론 공격 | 포트 제벨알리 병참 (CENTCOM)"),
-            dict(lat=31.78,lon=35.98,name="Ovda AB (이스라엘) — F-22 12대",sz=16,note="F-22 랩터 12대 배치 확인 (Wikipedia)"),
-            dict(lat=30.56,lon=37.22,name="Muwaffaq Salti AB (요르단) — F-15E·F-35",sz=16,note="이란 타격 받음 | F-15E·F-35 확인 (Israel Hayom)"),
-            dict(lat=33.40,lon=44.24,name="Al Asad AB (이라크) — 미 지상군",sz=14,note="이란 드론 대응 부대 (IndianExpress)"),
-            dict(lat=36.30,lon=43.90,name="Erbil AB (이라크) — SOF",sz=14,note="특수작전군 전진기지 (IndianExpress)"),
-            dict(lat=34.59,lon=32.98,name="Akrotiri AB (키프로스) — 미·영 공군",sz=16,note="헤즈볼라 드론 공격 | B-52 스테이징 (Parliament.uk)"),
-            dict(lat=23.0,lon=59.5,name="2,500 해병대 — 호르무즈 대기",sz=18,note="호르무즈 재개방 임무 | 상륙함 탑승 (CBC)"),
-        ]
-        us_predicted=[
-            dict(lat=19.5,lon=58.5,name="[예측] USS George H.W. Bush (CVN-77) 접근",sz=18,note="전개 훈련 완료 → 파견 가능성 (Forbes·Quwa)"),
-            dict(lat=25.5,lon=57.0,name="[예측] SEAL팀 호르무즈 수중작전",sz=12,note="기뢰 제거·특수작전 (ISW 분석)"),
-            dict(lat=22.5,lon=60.5,name="[예측] B-2 Spirit 전진기지",sz=14,note="Diego Garcia → 이란 반복 출격 추정"),
-            dict(lat=24.0,lon=53.0,name="[예측] MQ-9 리퍼 드론 작전구역",sz=12,note="UAE 알드파라 기반 ISR·타격"),
-        ]
-        ir_confirmed=[
-            dict(lat=29.23,lon=50.35,name="카르크섬 — IRGC 해군 112여단",sz=22,note="고속정·대함미사일 | 3/13 미군 타격 (IranIntl)"),
-            dict(lat=26.96,lon=56.27,name="반다르아바스 — IRGC 해군사령부",sz=20,note="수상전투함·잠수함 기지 (ISW)"),
-            dict(lat=26.55,lon=55.90,name="케슘섬 — 지하 미사일도시",sz=22,note="위성 확인 미사일 시설 | '가라앉지 않는 항모' (Al Jazeera)"),
-            dict(lat=27.06,lon=56.89,name="시리크 — 샤히드 마지드 해군기지",sz=18,note="위성 포착: 고속정 40+ 집결 (Euro-Times)"),
-            dict(lat=28.97,lon=50.84,name="부셰르 미사일기지 — 크루즈미사일",sz=20,note="3/17 미군 5,000lb 벙커버스터 타격 (Guardian)"),
-            dict(lat=35.69,lon=51.39,name="테헤란 — IRGC 지휘부 (타격됨)",sz=18,note="2/28 하메네이 사망 (Wikipedia)"),
-            dict(lat=32.43,lon=53.69,name="이스파한 — 핵시설 (타격됨)",sz=18,note="2/28 핵 농축시설 (Britannica)"),
-            dict(lat=36.30,lon=59.60,name="마슈하드 — IRGC 미사일여단",sz=16,note="샤하브-3·파타흐-110 기지 (ISW)"),
-            dict(lat=33.89,lon=35.50,name="레바논 — 헤즈볼라 (이란 프록시)",sz=18,note="로켓200발+드론20대 | IRGC 지원 (ISW)"),
-        ]
-        ir_predicted=[
-            dict(lat=26.80,lon=55.50,name="[예측] IRGC 고속정 호르무즈 배치",sz=18,note="40+ 고속정 분산 배치 (ISW 분석)"),
-            dict(lat=27.40,lon=57.30,name="[예측] 이란 잠수함 (가딜급) 작전구역",sz=14,note="기뢰 부설·선제공격 태세"),
-            dict(lat=34.80,lon=48.50,name="[예측] IRGC 방공망 잔존구역",sz=12,note="잔존 S-300 배치 추정"),
-            dict(lat=30.50,lon=56.80,name="[예측] 지하 미사일 사일로 (케르만)",sz=14,note="ISW 분석"),
-            dict(lat=33.0,lon=46.50,name="[예측] 이란 지원 이라크 PMF",sz=12,note="카타이브 헤즈볼라 → 미군 기지 드론"),
-        ]
-        fig_mil=go.Figure()
+        fig_mil = go.Figure()
+        # ── 방어선 및 전선 (Frontlines) ──
         fig_mil.add_trace(go.Scattergeo(
-            lon=[55.3,55.3,58.8,58.8,55.3],lat=[25.5,27.3,27.3,25.5,25.5],
-            mode="lines",fill="toself",fillcolor="rgba(239,68,68,0.08)",
-            line=dict(color="#ef4444",width=1.5,dash="dash"),name="⛔ 호르무즈 봉쇄구역",hoverinfo="name"))
+            lon=[49.0, 52.0, 55.0, 57.0, 59.0], lat=[30.0, 27.5, 26.5, 26.0, 25.3],
+            mode="lines", line=dict(color="#ef4444", width=3, dash="dashdot"), name="IRGC A2/AD Line"
+        ))
         fig_mil.add_trace(go.Scattergeo(
-            lon=[56.0,56.5,57.0,57.5,58.0],lat=[26.3,26.5,26.6,26.5,26.2],
-            mode="lines",line=dict(color="#06b6d4",width=3,dash="dot"),name="🚢 항로",hoverinfo="name"))
-        if "🔵 미군 확인 배치 (팩트)" in layer_opts:
-            fig_mil.add_trace(go.Scattergeo(
-                lon=[p["lon"] for p in us_confirmed],lat=[p["lat"] for p in us_confirmed],mode="markers",
-                marker=dict(size=[p["sz"] for p in us_confirmed],color="#3b82f6",symbol="pentagon",
-                            line=dict(width=1.5,color="white"),opacity=0.95),
-                name="🔵 미군 확인 (팩트)",
-                text=[f"<b>🔵 {p['name']}</b><br><span style='color:#93c5fd'>{p['note']}</span>" for p in us_confirmed],
-                hovertemplate="%{text}<extra></extra>"))
-        if "🔵 미군 예측 배치" in layer_opts:
-            fig_mil.add_trace(go.Scattergeo(
-                lon=[p["lon"] for p in us_predicted],lat=[p["lat"] for p in us_predicted],mode="markers",
-                marker=dict(size=[p["sz"] for p in us_predicted],color="#93c5fd",symbol="pentagon-open",
-                            line=dict(width=2.5,color="#3b82f6"),opacity=0.8),
-                name="🔵 미군 예측",
-                text=[f"<b>{p['name']}</b><br><span style='color:#60a5fa'>{p['note']}</span>" for p in us_predicted],
-                hovertemplate="%{text}<extra></extra>"))
-        if "🔴 이란군 확인 배치 (팩트)" in layer_opts:
-            fig_mil.add_trace(go.Scattergeo(
-                lon=[p["lon"] for p in ir_confirmed],lat=[p["lat"] for p in ir_confirmed],mode="markers",
-                marker=dict(size=[p["sz"] for p in ir_confirmed],color="#ef4444",symbol="star",
-                            line=dict(width=1.5,color="white"),opacity=0.95),
-                name="🔴 이란군 확인 (팩트)",
-                text=[f"<b>🔴 {p['name']}</b><br><span style='color:#fca5a5'>{p['note']}</span>" for p in ir_confirmed],
-                hovertemplate="%{text}<extra></extra>"))
-        if "🟠 이란군 예측 배치" in layer_opts:
-            fig_mil.add_trace(go.Scattergeo(
-                lon=[p["lon"] for p in ir_predicted],lat=[p["lat"] for p in ir_predicted],mode="markers",
-                marker=dict(size=[p["sz"] for p in ir_predicted],color="#f97316",symbol="star-open",
-                            line=dict(width=2.5,color="#f97316"),opacity=0.82),
-                name="🟠 이란군 예측",
-                text=[f"<b>{p['name']}</b><br><span style='color:#fed7aa'>{p['note']}</span>" for p in ir_predicted],
-                hovertemplate="%{text}<extra></extra>"))
+            lon=[53.0, 55.0, 56.5, 59.5], lat=[24.5, 25.0, 26.0, 23.0],
+            mode="lines", line=dict(color="#3b82f6", width=2, dash="dot"), name="US Escort Route"
+        ))
+        # ── 미군 진형 (US Forces) ──
+        us_forces = [
+            dict(lon=61.0, lat=22.0, text="<span style='font-size:16px'>🚢🚢</span><br><span style='font-size:14px'>✈️✈️✈️✈️<br>✈️✈️✈️✈️</span><br><b>US 5A Fleet HQ</b><br>2 Carrier Groups<br>CVN-72, 78", color="#60a5fa"),
+            dict(lon=51.5, lat=24.5, text="<span style='font-size:14px'>🛩️🛩️🛩️🛩️<br>🛩️🛩️🛩️</span><br><b>CENTCOM Air</b><br>Al Udeid/Al Dhafra<br>F-22, F-35", color="#60a5fa"),
+            dict(lon=59.5, lat=24.0, text="<span style='font-size:16px'>🪖🪖🪖🪖🪖</span><br><b>USMC MEU</b><br>2,500 Marines", color="#60a5fa"),
+            dict(lon=35.5, lat=31.5, text="<span style='font-size:14px'>🛩️🛩️</span><br><b>USAF Israel</b><br>Ovda AB (F-22)", color="#60a5fa")
+        ]
+        for f in us_forces:
+            fig_mil.add_trace(go.Scattergeo(lon=[f["lon"]], lat=[f["lat"]], mode="text", text=[f["text"]], textfont=dict(color=f["color"], size=10, family="Noto Sans KR"), name="US Forces"))
+        # ── 이란군 진형 (IRGC Forces) ──
+        ir_forces = [
+            dict(lon=56.5, lat=28.0, text="<span style='font-size:15px'>🚤🚤🚤🚤🚤<br>🚤🚤🚤🚤🚤</span><br><b>IRGC 112th</b><br>Strait Blockade<br>40+ Fast Boats", color="#fca5a5"),
+            dict(lon=50.5, lat=29.0, text="<span style='font-size:15px'>🚀🚀🚀<br>🚀🚀</span><br><b>Coastal Def</b><br>Anti-Ship ASM", color="#fca5a5"),
+            dict(lon=53.0, lat=33.0, text="<span style='font-size:15px'>🚀🚀🚀🚀<br>🚀🚀🚀🚀</span><br><b>IRGC Aero</b><br>Ballistic HQ", color="#fca5a5"),
+            dict(lon=44.0, lat=33.0, text="<span style='font-size:15px'>🪖🪖🪖</span><br><b>PMF Militia</b>", color="#fca5a5"),
+            dict(lon=57.5, lat=26.8, text="<span style='font-size:16px'>🚢🚢</span><br><b>IRGC Subs</b>", color="#fca5a5")
+        ]
+        for f in ir_forces:
+            fig_mil.add_trace(go.Scattergeo(lon=[f["lon"]], lat=[f["lat"]], mode="text", text=[f["text"]], textfont=dict(color=f["color"], size=10, family="Noto Sans KR"), name="IRGC Forces"))
+        # ── 유조선 현황 (Commercial Tankers) ──
+        tankers = [
+            dict(lon=55.5, lat=26.2, text="<span style='font-size:16px'>⛴️⛴️⛴️</span><br><b style='color:#ef4444'>Detained</b><br>12 Tankers", color="#94a3b8"),
+            dict(lon=58.5, lat=24.5, text="<span style='font-size:16px'>⛴️⛴️⛴️⛴️⛴️<br>⛴️⛴️⛴️</span><br><b style='color:#22c55e'>Rerouted/Safe</b><br>31 Tankers", color="#94a3b8")
+        ]
+        for t in tankers:
+            fig_mil.add_trace(go.Scattergeo(lon=[t["lon"]], lat=[t["lat"]], mode="text", text=[t["text"]], textfont=dict(color=t["color"], size=10, family="Noto Sans KR"), name="Tankers"))
         fig_mil.update_layout(
-            height=650,paper_bgcolor="#060d1a",plot_bgcolor="#060d1a",
-            font=dict(color="#e2e8f0",family="Noto Sans KR"),
-            geo=dict(scope="asia",showland=True,landcolor="#131f35",showocean=True,oceancolor="#0a1628",
-                     showlakes=True,lakecolor="#0a1628",showcountries=True,countrycolor="#1e3a5f",
-                     showcoastlines=True,coastlinecolor="#1e3a5f",bgcolor="#060d1a",
-                     center=dict(lat=28,lon=52),projection_scale=4.5),
-            legend=dict(bgcolor="rgba(6,13,26,0.92)",bordercolor="#1a3050",borderwidth=1,font=dict(size=9.5),x=0.01,y=0.99),
-            margin=dict(l=0,r=0,t=35,b=0),
-            title=dict(text="🪖 미군(🔵)·이란군(🔴) — 실선=팩트 확인 / 점선=분석 예측",
-                       font=dict(size=12,color="#64748b"),x=0.5))
-        st.plotly_chart(fig_mil,use_container_width=True)
-
+            height=700, paper_bgcolor="#060d1a", plot_bgcolor="#060d1a", font=dict(color="#e2e8f0", family="Noto Sans KR"),
+            geo=dict(scope="asia", showland=True, landcolor="#111c2e", showocean=True, oceancolor="#07101e", showcountries=True, countrycolor="#1a3050", bgcolor="#060d1a", center=dict(lat=28, lon=52), projection_scale=4.5),
+            showlegend=False, margin=dict(l=0, r=0, t=10, b=0)
+        )
+        st.plotly_chart(fig_mil, use_container_width=True)
     with legend_col:
-        for title,items,color in [
-            ("🔵 미군 주요 전력",[("항모전단 2척","CVN-72 아라비아해/CVN-78 홍해"),
-              ("F-22 12대","오브다 AB(이스라엘)"),("F-15E·F-35","무와파크 살티 AB(요르단)"),
-              ("해병대 2,500명","아라비아해 대기"),("Patriot PAC-3","카타르·쿠웨이트·UAE")],"#60a5fa"),
-            ("🔴 이란군 주요 배치",[("카르크섬 IRGC해군","고속정+대함미사일(3/13 타격)"),
-              ("케슘섬 지하기지","위성 확인 미사일시설"),("시리크 해군기지","고속정 40+ 위성 포착"),
-              ("부셰르 미사일기지","크루즈미사일(3/17 타격)"),("헤즈볼라(레바논)","로켓200발+드론20대")],"#f87171"),
-        ]:
-            rows=""
-            for lb,detail in items:
-                rows+=f"""<div style="margin-bottom:5px;border-bottom:1px solid #0f1825;padding-bottom:4px">
-                    <div style="font-size:0.77rem;color:{color};font-weight:700">{lb}</div>
-                    <div style="font-size:0.69rem;color:#475569">{detail}</div></div>"""
-            st.markdown(f"""<div class="tracker-box"><div class="tracker-title">{title}</div>{rows}</div>""",unsafe_allow_html=True)
-        rows_b=""
-        for domain,status,c in [("제공권","미군 장악","#22c55e"),("해상","이란 봉쇄·미군 대응","#f59e0b"),
-            ("미사일","이란 잔존","#f87171"),("핵시설","70%+ 무력화","#22c55e"),("리더십","하메네이 사망","#22c55e")]:
-            rows_b+=f"""<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #0f1825;font-size:0.76rem">
-                <span style="color:#94a3b8">{domain}</span><span style="color:{c};font-weight:700">{status}</span></div>"""
-        st.markdown(f"""<div class="tracker-box"><div class="tracker-title">⚖️ 전력 균형</div>{rows_b}</div>""",unsafe_allow_html=True)
-        st.markdown("""<div style="font-size:0.65rem;color:#334155;margin-top:0.3rem;text-align:center">
-            출처: CENTCOM·ISW·Wikipedia·IranIntl·Al Jazeera</div>""",unsafe_allow_html=True)
+        st.markdown("""<div class="tracker-box" style="border-color:#3b82f6; background:#0a1224;">
+            <div class="tracker-title" style="border-bottom:1px solid #1e3a8a; padding-bottom:5px; margin-bottom:10px;">📋 TACTICAL KEY (범례)</div>
+            <div style="font-size:0.8rem; line-height:1.8;">
+                <b style="color:#60a5fa">US & Allied Forces</b><br>✈️/🛩️ = 20 Aircraft<br>🚢 = 1 Carrier Strike Group<br>🪖 = 500 Marines/Troops<br><br>
+                <b style="color:#ef4444">Iran & IRGC Forces</b><br>🚤 = 10 Attack Craft<br>🚀 = Missile Battalion<br>🚢 = 1 Submarine Squadron<br>🪖 = Proxy Militia Group<br><br>
+                <b style="color:#cbd5e1">Commercial</b><br>⛴️ = 4 Oil Tankers
+            </div></div>
+            <div class="tracker-box"><div class="tracker-title">전선 및 통제 현황</div>
+            <div style="font-size:0.75rem; color:#94a3b8; line-height:1.6;">
+                <b style="color:#ef4444">─── IRGC A2/AD Line</b><br>해안선 기준 150km 내 방공 거부 구역.<br><br>
+                <b style="color:#3b82f6">· · · US Escort Route</b><br>호르무즈 외곽 미 5함대 상선 보호 구역.
+            </div></div>
+            <div class="tracker-box"><div class="tracker-title">유조선 항행 지표</div>
+            <div style="font-size:0.75rem; color:#94a3b8; line-height:1.6;">
+                <b style="color:#ef4444">🚨 억류/나포 (Detained)</b>: 12척<br>
+                <b style="color:#f59e0b">⚠️ 봉쇄대기 (Blocked)</b>: 22척<br>
+                <b style="color:#22c55e">✅ 우회완료 (Rerouted)</b>: 31척
+            </div></div>""", unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════
 # TAB 3 : 타임라인
@@ -497,7 +442,7 @@ with tab5:
         tank=[100,100,100,100,85,60,30,12,8,8,8,10,10,12,15,15,15,15,15,15,15,15]
         tank=tank[:len(tank_days)]
         ft=go.Figure()
-        ft.add_vline(x="2026-03-02",line_dash="dash",line_color="#ef4444",annotation_text="봉쇄선언",annotation_font_size=10)
+        ft.add_vline(x=datetime(2026,3,2).timestamp()*1000,line_dash="dash",line_color="#ef4444",annotation_text="봉쇄선언",annotation_font_size=10)
         ft.add_trace(go.Scatter(x=tank_days[:len(tank)],y=tank,mode="lines+markers",
             line=dict(color="#06b6d4",width=3),fill="tozeroy",fillcolor="rgba(6,182,212,0.08)"))
         ft.update_layout(height=230,paper_bgcolor="#060d1a",plot_bgcolor="#060d1a",
