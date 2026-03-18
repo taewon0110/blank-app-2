@@ -9,7 +9,7 @@ import io
 # T-Protocol 로딩: 가식 없는 팩트폭격 카페 시뮬레이터 (매운맛)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 st.set_page_config(
-    page_title="💀 카페 창업 생존 시뮬레이터: 극현실 지옥편",
+    page_title="☕ 메가급 저가커피 창업 시뮬레이터",
     page_icon="☕",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -23,24 +23,24 @@ html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
 .kpi-card:hover { border-color: #ef4444; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2); }
 .kpi-title { font-size: 0.85rem; color: #a1a1aa; font-weight: 700; margin-bottom: 5px; }
 .kpi-val { font-size: 1.8rem; font-weight: 900; color: #f4f4f5; font-family: monospace; }
-.fact-box { border-left: 4px solid #ef4444; background: #27272a; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
-.fact-title { color: #ef4444; font-weight: 900; font-size: 1.1rem; margin-bottom: 5px; }
+.fact-box { border-left: 4px solid #FCD34D; background: #27272a; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+.fact-title { color: #FCD34D; font-weight: 900; font-size: 1.1rem; margin-bottom: 5px; }
 .fact-text { color: #d4d4d8; font-size: 0.95rem; line-height: 1.5; }
-.header-container { background: linear-gradient(135deg, #111113 0%, #1f1015 100%); padding: 35px 40px; border-radius: 16px; border: 1px solid rgba(244, 63, 94, 0.2); box-shadow: 0 10px 40px -10px rgba(225, 29, 72, 0.3); margin-bottom: 30px; position: relative; overflow: hidden; }
-.header-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(225, 29, 72, 0.05) 0%, transparent 60%); }
-.tprot-badge { display: inline-block; background: rgba(225, 29, 72, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: #fb7185; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; letter-spacing: 0.5px; }
-.tprot-title { color: #fff; font-size: 2.2rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -1.2px; line-height: 1.2; text-shadow: 0 2px 10px rgba(225, 29, 72, 0.2); }
-.tprot-title span { color: #fb7185; background: -webkit-linear-gradient(0deg, #f43f5e, #fda4af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-container { background: linear-gradient(135deg, #1C1914 0%, #2A251D 100%); padding: 35px 40px; border-radius: 16px; border: 1px solid rgba(252, 211, 77, 0.3); box-shadow: 0 10px 40px -10px rgba(252, 211, 77, 0.2); margin-bottom: 30px; position: relative; overflow: hidden; }
+.header-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(252, 211, 77, 0.05) 0%, transparent 60%); }
+.tprot-badge { display: inline-block; background: rgba(252, 211, 77, 0.15); border: 1px solid rgba(252, 211, 77, 0.5); color: #FCD34D; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; letter-spacing: 0.5px; }
+.tprot-title { color: #fff; font-size: 2.2rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -1.2px; line-height: 1.2; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); }
+.tprot-title span { color: #FCD34D; }
 .tprot-subtitle { color: #a1a1aa; font-size: 1.05rem; font-weight: 400; margin: 0; line-height: 1.6; }
 h3 { margin-top: 1.5rem; }
-.stSlider > div > div > div > div { background-color: #ef4444; }
+.stSlider > div > div > div > div { background-color: #FCD34D; }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div class="header-container">
-    <div class="tprot-badge">🔥 T-PROTOCOL EXCLUSIVE</div>
-    <h1 class="tprot-title">💀 저가커피 프랜차이즈 실전 <span>재무 진단기</span></h1>
+    <div class="tprot-badge">☕ MEGA-PROTOCOL EXCLUSIVE</div>
+    <h1 class="tprot-title">🟡 메가급 저가커피 브랜드 실전 <span>재무 진단기</span></h1>
     <p class="tprot-subtitle">프랜차이즈 본사 영업사원은 절대 말해주지 않는 가맹점 실질 수익률(Margin)과 단위경제학(Unit Economics) 팩트 체크.</p>
 </div>
 """, unsafe_allow_html=True)
