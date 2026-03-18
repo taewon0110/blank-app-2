@@ -68,13 +68,14 @@ with st.sidebar:
     def apply_preset():
         p = st.session_state.preset_radio
         if "1%" in p:
-            st.session_state.loc_sel = "B급 (오피스/대학가)"
+            # A급 번화가 15평, 알바 최소화(1명), 점주 주도 오퍼레이션, 정부지원 풀 활용
+            st.session_state.loc_sel = "A급 (번화가)"
             st.session_state.area = 15
             st.session_state.unit_price = 5500
             st.session_state.mat_ratio = 30
             st.session_state.del_ratio = 0
-            st.session_state.owner_hrs = 10   # 점주 10시간 매대 관리
-            st.session_state.alba_count = 1.5 # 알바 1~2명 유지 (고시급 에이스)
+            st.session_state.owner_hrs = 12   # 점주 12시간 풀매대 전담
+            st.session_state.alba_count = 1.0 # 알바 최소 1명 유지
             st.session_state.pt_wage = 14000
             st.session_state.black_consumer = 0.5
             st.session_state.alba_run = 0
