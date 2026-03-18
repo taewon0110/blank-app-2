@@ -224,7 +224,7 @@ if not suggestions:
     suggestions.append("💡 **현재 지표 방어율 양호**: 수익 구조상 치명적인 누수는 보이지 않는다. 다만 이건 시뮬레이터 수치일 뿐, 며칠 장마 오거나 바로 옆에 '저가커피(메가커피 등)' 들어오면 바로 나락 가는 게 현실이다. 흑자 날 때 무조건 현금부터 모아둬라.")
 
 for idx, sugg in enumerate(suggestions):
-    st.markdown(f'<div style="background:#1f191a; padding:15px; border-left:4px solid #f43f5e; margin-bottom:10px; border-radius:4px;">{sugg}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#1f191a; color:#ffffff; padding:15px; border-left:4px solid #f43f5e; margin-bottom:10px; border-radius:4px;">{sugg}</div>', unsafe_allow_html=True)
 
 st.markdown("""
 <br>
