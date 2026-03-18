@@ -267,6 +267,38 @@ for s in strategies:
     else:
         st.markdown(f'<div style="background:#27272a; color:#a1a1aa; padding:15px; border-left:4px solid #52525b; margin-bottom:10px; border-radius:4px;">✅ <del><b>{s["title"]}</b></del> (현재 수치상 방어 성공)<br><span style="font-size:0.9rem;">{s["text"]}</span></div>', unsafe_allow_html=True)
 
+st.markdown("---")
+st.markdown("### 🏆 [부록] 상위 1% vs 하위 10% 단위경제학 스터디 (Case Study)")
+st.caption("비현실적 희망회로가 아닌, 냉정한 데이터를 바탕으로 완성된 S급 캐시카우 모델과 파산 모델의 비교 시뮬레이션이다.")
+
+col_cs1, col_cs2 = st.columns(2)
+
+with col_cs1:
+    st.markdown("""
+    <div style="background:#111113; border:1px solid #4ade80; border-radius:8px; padding:20px; height:100%;">
+        <h4 style="color:#4ade80; margin-top:0;">🌟 S급 하이엔드 오퍼레이션 모델 (상위 1%)</h4>
+        <ul style="color:#d4d4d8; font-size:0.95rem; line-height:1.7;">
+            <li><b>전략적 입지:</b> '오피스/대학가 B급 상권'에서 임대료를 억제하고, 디저트 결합으로 <b>객단가를 6~8천 원 방어</b>한다.</li>
+            <li><b>원가/플랫폼 락인:</b> 원가율 30% 이하 타겟팅. 매출 외형만 불리는 배달은 과감히 끊고 <b>자사앱 픽업 기반 워크인 100%</b> 달성.</li>
+            <li><b>HR 초단기효율화:</b> 점주는 매대에서 탈출해 B2B 단체 정기구독(케이터링) 영업에 사활을 걸고, 매장은 시급 1.3배를 받는 <b>'대기업 매니저급 에이스' 1명</b>이 무결점 통제한다.</li>
+        </ul>
+        <div style="color:#22c55e; font-weight:900; font-size:1.1rem; margin-top:20px;">➔ 월 순수익 1천만 원 이상 고공행진. 투자 회수 1년 컷.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_cs2:
+    st.markdown("""
+    <div style="background:#111113; border:1px solid #f43f5e; border-radius:8px; padding:20px; height:100%;">
+        <h4 style="color:#f43f5e; margin-top:0;">💀 밑빠진 독 (워킹푸어) 함정 모델 (하위 10%)</h4>
+        <ul style="color:#d4d4d8; font-size:0.95rem; line-height:1.7;">
+            <li><b>가오충 CAPEX:</b> 보여주기식 'S급 메인상권' A급 인테리어 평당 450만 원 박고, <b>정부지원 없이 100% 한도 영끌 대출</b> 시작.</li>
+            <li><b>역마진 볼륨화:</b> 객단가 2,000원 아이스 아메리카노만 팔면서, 외형 부풀리려고 <b>플랫폼 배달 비중 70%</b>(수수료 35% 이상 증발)에 목숨 건다.</li>
+            <li><b>오퍼레이션 붕괴:</b> 스태프 최저시급 후려치다 무단결근(추노) 맞고, <b>점주 본인이 하루 16시간 매대</b> 닦으면서 고객 컴플레인 맞고 멘탈 붕괴.</li>
+        </ul>
+        <div style="color:#ef4444; font-weight:900; font-size:1.1rem; margin-top:20px;">➔ 오너 실질 시급 3,000원. 대출 이자에 짓눌려 1년 내 강제 파산.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
 st.markdown("""
 <br>
 <div style="text-align:right; color:#71717a; font-size:0.8rem;">
