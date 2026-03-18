@@ -82,17 +82,19 @@ with st.sidebar:
             st.session_state.gov_subsidy = 4500
             st.session_state.use_youth_loan = True
         elif "평균" in p:
+            # S급 메인상권에 들어갔지만 수익 안 나는 구조
+            # 점주 16시간 뼈 갈리는데 오너 시급 < 최저임금 → 진짜 워킹푸어
             st.session_state.loc_sel = "S급 (메인상권)"
             st.session_state.area = 10
-            st.session_state.unit_price = 3000
-            st.session_state.mat_ratio = 38
-            st.session_state.del_ratio = 40
-            st.session_state.owner_hrs = 14
-            st.session_state.alba_count = 1.0
-            st.session_state.pt_wage = 9860
-            st.session_state.black_consumer = 3.0
-            st.session_state.alba_run = 30
-            st.session_state.gov_subsidy = 0
+            st.session_state.unit_price = 2500   # 아이스 아메리카노 단일 저객단가
+            st.session_state.mat_ratio = 40       # 로스율 포함 원가 40%
+            st.session_state.del_ratio = 60       # 배달 외형만 불리기 60%
+            st.session_state.owner_hrs = 16       # 점주 16시간 매대 혹사
+            st.session_state.alba_count = 2.0     # 알바는 써야 돌아감 (최저시급)
+            st.session_state.pt_wage = 9860       # 최저시급으로 갈아넣기
+            st.session_state.black_consumer = 4.0 # 배달 많으니 진상 클레임 빈발
+            st.session_state.alba_run = 50        # 최저시급이라 알바 이탈 잦음
+            st.session_state.gov_subsidy = 0      # 정부지원 신청할 시간도 없음
             st.session_state.use_youth_loan = False
 
     st.radio("빅데이터 수집 기반 현실 프리셋", 
