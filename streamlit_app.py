@@ -68,6 +68,7 @@ with st.sidebar:
     st.header("3️⃣ 인간 갈아넣기 & 지옥의 변수")
     work_hrs = 14
     owner_work = st.slider(f"사장 매장 상주시간 (일 기준, 총 {work_hrs}H 중)", 0, 16, 10)
+    alba_count = st.slider("동시 근무 알바 수 (피크타임 대비 비율)", 0.5, 4.0, 1.5, step=0.5, help="1.0이면 항상 1명이 매장을 지킴. 2.0이면 알바 2명이서 14시간 내내 풀가동.")
     pt_wage = st.number_input("알바 시급 (원, 주휴+퇴직금리스크 반영)", 9860, 20000, 12500)
     
     st.markdown("🚨 **[숨겨진 현실 리스크 파라미터]**")
@@ -100,7 +101,7 @@ monthly_material = monthly_rev * material_ratio
 monthly_delivery_fee = (daily_rev_delivery * 30) * delivery_fee_ratio
 
 # 인건비
-needed_labor_hours = work_hrs * 1.5 
+needed_labor_hours = work_hrs * alba_count 
 alba_hours = max(0, needed_labor_hours - owner_work)
 monthly_labor = alba_hours * pt_wage * 30
 
@@ -203,28 +204,39 @@ st.divider()
 st.markdown("### 💊 T-Protocol 생존 처방전: 수익률 강제 심폐소생술")
 st.caption("니가 세팅한 데이터를 바탕으로 뽑아낸 팩트 기반 생존 전략이다. 피눈물 흘리기 전에 당장 실행해라.")
 
-suggestions = []
-if monthly_rev > 0:
-    if (rent*10000) / monthly_rev > 0.15:
-        suggestions.append(f"🩸 **월세의 저주 ({rent*10000/monthly_rev*100:.1f}%)**: 매출의 15% 이상이 건물주 주머니로 간다. 배달 비중을 획기적으로 늘려서 좁은 매장 회전율을 쥐어짜내거나, 당장 보증금 빼서 B급 상권으로 도망가라.")
-        
-    if material_ratio > 0.35:
-        suggestions.append(f"🩸 **원가율 폭발 ({material_ratio*100:.1f}%)**: 음료 팔아서 남 좋은 일만 시키고 있다. 프랜차이즈라면 본사 납품가 협상은 못 하니, 마진율 70%가 넘는 '원가 저렴한 베이커리(스콘/쿠키)' 세트 메뉴를 무조건 끼워팔아 객단가를 억지로 끌어올려라.")
-        
-    if delivery_ratio >= 0.30 and delivery_fee_ratio >= 0.20:
-        suggestions.append(f"🩸 **플랫폼의 노예 (배달수수료 {delivery_fee_ratio*100:.1f}%)**: 오토바이 배기음 들릴 때마다 니 돈이 날아간다. 홀 단골들한테 '쿠폰 도장 2배'나 '사이즈업' 뿌려서라도 오프라인 방문객 구성을 70% 이상으로 돌려놔야 적자 면한다.")
-        
-    if hidden_risk_cost > 500000:
-        suggestions.append(f"🩸 **멘탈 및 통장 누수 (숨겨진 손실 {int(hidden_risk_cost/10000)}만)**: 진상 환불과 알바 추노로 새는 돈만 막아도 원룸 월세가 나온다. 최저시급 딱 맞춰 후려치지 말고, 돈 조금 더 주더라도 '책임감 단단한 에이스 알바 1명'을 꽉 잡아두는 게 장기적으로 매달 100만 원 아끼는 길이다.")
-        
-    if owner_hourly_wage < pt_wage:
-         suggestions.append(f"🩸 **사장 무쓸모 노동 (니 시급 {int(owner_hourly_wage)}원)**: 알바 시급({pt_wage}원)보다 못한 돈 받고 14시간씩 서있는 건 미친 짓이다. 니가 매장에서 주문만 받을 게 아니라, 밖에서 B2B 대량 주문(주변 오피스 정기배달 등)을 뚫어오거나 SNS 마케팅에 그 시간을 쏟아라.")
+strategies = [
+    {
+        "trigger": monthly_rev > 0 and (rent*10000) / monthly_rev > 0.15,
+        "title": f"월세의 저주 (현재 {rent*10000/max(monthly_rev,1)*100:.1f}%)",
+        "text": "매출의 15% 이상이 건물주 주머니로 간다. 배달 비중을 획기적으로 늘려서 좁은 매장 회전율을 쥐어짜내거나, 당장 보증금 빼서 B급 상권으로 도망가라."
+    },
+    {
+        "trigger": material_ratio > 0.35,
+        "title": f"원가율 폭발 (현재 {material_ratio*100:.1f}%)",
+        "text": "음료 팔아서 남 좋은 일만 시킨다. 마진율 70%가 넘는 '빵 쪼가리(스콘/쿠키)' 세트 메뉴를 무조건 끼워팔아 객단가를 억지로 끌어올려라."
+    },
+    {
+        "trigger": delivery_ratio >= 0.30 and delivery_fee_ratio >= 0.20,
+        "title": f"플랫폼의 노예 (배달수수료 {delivery_fee_ratio*100:.1f}%)",
+        "text": "오토바이 배기음 들릴 때마다 니 돈이 날아간다. 홀 단골들한테 '쿠폰 도장 2배'나 '사이즈업' 뿌려서라도 오프라인 방문객 구성을 70% 이상으로 돌려놔야 적자 면한다."
+    },
+    {
+        "trigger": hidden_risk_cost > 500000,
+        "title": f"멘탈/통장 누수 (숨겨진 손실 {int(hidden_risk_cost/10000)}만)",
+        "text": "진상 환불과 알바 추노로 새는 돈만 막아도 원룸 월세가 나온다. 최저시급 딱 맞춰 후려치지 말고, 돈 조금 더 주더라도 '책임감 단단한 에이스 알바 1명'을 꽉 잡아두는 게 장기적으로 매달 100만 원 아끼는 길이다."
+    },
+    {
+        "trigger": owner_hourly_wage < pt_wage,
+        "title": f"사장 무쓸모 노동 (니 시급 {int(owner_hourly_wage)}원)",
+        "text": f"알바 시급({pt_wage}원)보다 못한 돈 받고 14시간씩 서있는 건 미친 짓이다. 니가 매장에서 주문만 받을 게 아니라, 밖에서 B2B 대량 주문(주변 오피스 정기배달 등)을 뚫어오거나 SNS 마케팅에 그 시간을 쏟아라."
+    }
+]
 
-if not suggestions:
-    suggestions.append("💡 **현재 지표 방어율 양호**: 수익 구조상 치명적인 누수는 보이지 않는다. 다만 이건 시뮬레이터 수치일 뿐, 며칠 장마 오거나 바로 옆에 '저가커피(메가커피 등)' 들어오면 바로 나락 가는 게 현실이다. 흑자 날 때 무조건 현금부터 모아둬라.")
-
-for idx, sugg in enumerate(suggestions):
-    st.markdown(f'<div style="background:#1f191a; color:#ffffff; padding:15px; border-left:4px solid #f43f5e; margin-bottom:10px; border-radius:4px;">{sugg}</div>', unsafe_allow_html=True)
+for s in strategies:
+    if s["trigger"]:
+        st.markdown(f'<div style="background:#1f191a; color:#ffffff; padding:15px; border-left:4px solid #f43f5e; margin-bottom:10px; border-radius:4px;">🩸 <b>{s["title"]}</b><br>{s["text"]}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div style="background:#27272a; color:#a1a1aa; padding:15px; border-left:4px solid #52525b; margin-bottom:10px; border-radius:4px;">✅ <del><b>{s["title"]}</b></del> (현재 수치상 방어 성공)<br><span style="font-size:0.9rem;">{s["text"]}</span></div>', unsafe_allow_html=True)
 
 st.markdown("""
 <br>
