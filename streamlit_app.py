@@ -77,6 +77,10 @@ with st.sidebar:
     alba_count = st.slider("동시 근무 매니저/스태프 수 비율", 0.5, 4.0, 1.5, step=0.5, help="피크타임 샷 뽑는 노동 강도 고려. 메가급은 피크 때 3-4명도 갈아넣는다.")
     pt_wage = st.number_input("스태프 실질 시급 (주휴+퇴직금리스크 반영)", 9860, 20000, 12500)
     
+    st.markdown("💸 **[오퍼레이션 정부지원 영끌]**")
+    gov_job_subsidy = st.checkbox("청년일자리도약장려금 (스태프 1인당 월 인건비 보조)", value=False, help="2026년 기준 6개월 채용 유지 시 월 최대 60만원 인건비 보조율 삭감 적용.")
+    gov_voucher = st.checkbox("소상공인 경영안정 바우처 (전기세 등 유지비 차감)", value=False, help="연 25만 원 상당의 경영 고정비 바우처를 월 단위 공과금에서 선차감한다.")
+
     st.markdown("🚨 **[운영 리스크 파라미터 (HR/CS/설비)]**")
     black_consumer = st.slider("강성 클레임 & 서비스 환불 손실률 (%)", 0.0, 10.0, 2.5, step=0.1) / 100.0
     alba_run = st.number_input("인력 이탈 OJT 매몰비용 (구인/교육/결근 월 만원)", 0, 100, 15)
@@ -114,7 +118,11 @@ monthly_delivery_fee = (daily_rev_delivery * 30) * delivery_fee_ratio
 # 인건비
 needed_labor_hours = work_hrs * alba_count 
 alba_hours = max(0, needed_labor_hours - owner_work)
-monthly_labor = alba_hours * pt_wage * 30
+monthly_labor_raw = alba_hours * pt_wage * 30
+
+hired_staff = int(alba_count + 0.99) if alba_count > 0 else 0
+job_subsidy_amount = min(monthly_labor_raw, hired_staff * 600000) if gov_job_subsidy else 0
+monthly_labor = monthly_labor_raw - job_subsidy_amount
 
 # 고정 & 현실 반영 변동비
 if use_youth_loan:
@@ -126,7 +134,9 @@ else:
     monthly_interest = total_funds_needed * interest_rate_normal / 12 * 10000
     loan_amt = total_funds_needed
 
-utility = area * 60000 
+utility_raw = area * 60000 
+utility = max(0, utility_raw - (250000 / 12)) if gov_voucher else utility_raw
+
 card_fee = monthly_rev * 0.015
 etc_fixed = 300000 
 
