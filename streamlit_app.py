@@ -83,16 +83,21 @@ with st.sidebar:
     machine_fail = st.number_input("에스프레소 머신/제빙기 등 설비 감가상각 (월 만원)", 0, 80, 15)
     
     st.divider()
-    st.header("4️⃣ 자본 레버리지 (금융 비용)")
-    my_cash = st.number_input("자기 자본 (만원)", 0, 200000, 5000, step=1000)
-    interest_rate = st.number_input("대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
+    st.header("4️⃣ 자본 레버리지 (정책자금 & 금융비용)")
+    my_cash = st.number_input("순수 자기 자본 (만원)", 0, 200000, 5000, step=1000)
+    
+    st.markdown("💸 **[2026년 정부 정책자금 영끌]**")
+    gov_subsidy = st.slider("정부 무상지원 사업화 자금 (상환X 순수지원, 만원)", 0, 10000, 0, step=500, help="2026년 예비창업패키지 등 청년 지원 평균 4,700만원. 갚지 않아도 되는 지원금액.")
+    use_youth_loan = st.checkbox("중진공 청년전용 창업자금 대출 리스크 헷징 (최대 1억, 연 2.5% 고정)", value=False)
+    
+    interest_rate_normal = st.number_input("1금융권/사업자 일반 대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
 
 # ── 초기투자 (CAPEX) ──
 int_cost = loc['인테리어'] * area
 machine_cost = 2500 
 etc_start_cost = 1000 
 total_startup = dep + kwon + int_cost + machine_cost + etc_start_cost
-loan_amt = max(0, total_startup - my_cash)
+total_funds_needed = max(0, total_startup - my_cash - gov_subsidy)
 
 # ── 연산 ──
 seats = int(area * 0.7) 
@@ -112,7 +117,15 @@ alba_hours = max(0, needed_labor_hours - owner_work)
 monthly_labor = alba_hours * pt_wage * 30
 
 # 고정 & 현실 반영 변동비
-monthly_interest = loan_amt * interest_rate / 12 * 10000
+if use_youth_loan:
+    youth_loan_amt = min(total_funds_needed, 10000) 
+    normal_loan_amt = max(0, total_funds_needed - 10000)
+    monthly_interest = (youth_loan_amt * 0.025 / 12 * 10000) + (normal_loan_amt * interest_rate_normal / 12 * 10000)
+    loan_amt = youth_loan_amt + normal_loan_amt
+else:
+    monthly_interest = total_funds_needed * interest_rate_normal / 12 * 10000
+    loan_amt = total_funds_needed
+
 utility = area * 60000 
 card_fee = monthly_rev * 0.015
 etc_fixed = 300000 
@@ -158,11 +171,12 @@ elif owner_hourly_wage < pt_wage:
         시스템이 일하게 만들지 못하면 넌 본사 배나 불려주는 고도화된 스팀 노예일 뿐이다. 당장 아웃바운드 세일즈나 판관비 조정에 들어가라.</div>
     </div>""", unsafe_allow_html=True)
 else:
-    months_to_rec = (total_startup * 10000) / net_profit
+    recoup_target = total_startup - gov_subsidy
+    months_to_rec = (recoup_target * 10000) / net_profit
     if net_profit >= 10000000 or months_to_rec <= 24:
         st.markdown(f"""<div class="fact-box" style="border-color:#3b82f6;">
             <div class="fact-title">📈 엑설런트 박리다매! 압도적 볼륨(Volume) 강점 확보 📈</div>
-            <div class="fact-text">저가형 프랜차이즈의 로망인 '터지는 회전율'을 달성했다. 월 순수익 <b>{int(net_profit/10000):,}만 원</b>에 투자금 <b>{total_startup:,}만 원</b> 회수율 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이라는 메가급 초고속 캐시카우를 구축했다. 
+            <div class="fact-text">저가형 프랜차이즈의 로망인 '터지는 회전율'을 달성했다. 월 순수익 <b>{int(net_profit/10000):,}만 원</b>에 투자금(부채+자본) 회수율 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이라는 메가급 초고속 캐시카우를 구축했다. 
             진상 고객 한두 명(월 <b>{int(black_consumer_loss/10000):,}만 원</b> 손실)이나 알바 교체비용 정도는 거뜬히 씹어먹는 규모의 경제를 입증했다. 
             현재 시스템과 인적 자원을 고도화시켜 인근 상권에 2호점 출점(다점포 전개)을 준비하는 등 자본 스케일업을 도모해라!</div>
         </div>""", unsafe_allow_html=True)
@@ -171,7 +185,7 @@ else:
             <div class="fact-title">✅ 영업이익권 진입 완료. 운영 최적화(Optimization) 방어전 돌입 ✅</div>
             <div class="fact-text">치열한 마진 싸움 끝에 <b>{int(net_profit/10000):,}만 원</b>의 영업 흑자 방어선을 뚫어냈다. 
             그러나 박리다매 구조에서 가장 무서운 건 슬로우 시즌 타격이나 예기치 못한 제빙기 고장(월 <b>{(alba_run+machine_fail):,}만 원</b> 소요) 같은 유동성 변수다. 
-            현재 수익 흐름 기준 초기 자본금 <b>{total_startup:,}만 원</b> 완전 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이 예상된다. 경쟁 저가 커피 브랜드 기습 입점에 대비해 내부 사내유보금을 즉시 쌓아라.</div>
+            현재 수익 흐름 기준 초기 환수 대상 자본금 <b>{recoup_target:,}만 원</b> 완전 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이 예상된다. 경쟁 저가 커피 브랜드 기습 입점에 대비해 내부 사내유보금을 즉시 쌓아라.</div>
         </div>""", unsafe_allow_html=True)
 
 c1, c2 = st.columns([1, 1.2])
