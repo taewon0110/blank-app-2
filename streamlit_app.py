@@ -56,6 +56,14 @@ LOCATIONS = {
 with st.sidebar:
     st.header("⚡ 원클릭 자동 팩트 세팅 (2026년형)")
     
+    if "loc_sel" not in st.session_state:
+        st.session_state.update({
+            "loc_sel": "B급 (오피스/대학가)", "area": 15, "unit_price": 5000, 
+            "mat_ratio": 35, "del_ratio": 20, "owner_hrs": 10, "alba_count": 1.5,
+            "pt_wage": 12500, "black_consumer": 2.5, "alba_run": 15,
+            "gov_subsidy": 0, "use_youth_loan": False
+        })
+        
     def apply_preset():
         p = st.session_state.preset_radio
         if "1%" in p:
@@ -92,8 +100,8 @@ with st.sidebar:
     st.divider()
 
     st.header("1️⃣ 입지 및 투자비용 (CAPEX)")
-    loc_sel = st.selectbox("상권 수준 (현실 파악부터)", list(LOCATIONS.keys()), index=2, key="loc_sel")
-    area = st.number_input("매장 평수", 10, 100, 15, key="area")
+    loc_sel = st.selectbox("상권 수준 (현실 파악부터)", list(LOCATIONS.keys()), key="loc_sel")
+    area = st.number_input("매장 평수", min_value=10, max_value=100, key="area")
     loc = LOCATIONS[loc_sel]
     
     dep = st.number_input("보증금 (만원)", 0, 100000, int(loc['보증금평당']*area), step=100)
@@ -102,25 +110,25 @@ with st.sidebar:
     
     st.divider()
     st.header("2️⃣ 매출 볼륨 및 원가 구조 (COGS)")
-    unit_price = st.number_input("예상 평균 객단가 (원)", 2000, 20000, 5000, step=500, key="unit_price", help="저가커피는 아메리카노 1500~2000원이지만, 디저트/에이드 묶어파는 평균 객단가를 입력해라.")
-    material_ratio = st.slider("원부자재 원가율 (%) - 본사 필수물대 포함", 15, 60, 35, key="mat_ratio") / 100.0
-    delivery_ratio = st.slider("배달 비중 (%) - 할수록 역마진 직행", 0, 80, 20, key="del_ratio") / 100.0
+    unit_price = st.number_input("예상 평균 객단가 (원)", min_value=2000, max_value=20000, step=500, key="unit_price", help="저가커피는 아메리카노 1500~2000원이지만, 디저트/에이드 묶어파는 평균 객단가를 입력해라.")
+    material_ratio = st.slider("원부자재 원가율 (%) - 본사 필수물대 포함", min_value=15, max_value=60, key="mat_ratio") / 100.0
+    delivery_ratio = st.slider("배달 비중 (%) - 할수록 역마진 직행", min_value=0, max_value=80, key="del_ratio") / 100.0
     delivery_fee_ratio = st.slider("배달 플랫폼 수수료 및 부대비용 (%)", 10, 50, 25) / 100.0
     
     st.divider()
     st.header("3️⃣ 오퍼레이션 및 리스크 제어")
     work_hrs = 14
-    owner_work = st.slider(f"가맹점주 상주시간 (일 기준, 총 {work_hrs}H 중)", 0, 16, 10, key="owner_hrs")
-    alba_count = st.slider("동시 근무 매니저/스태프 수 비율", 0.5, 4.0, 1.5, step=0.5, key="alba_count", help="피크타임 샷 뽑는 노동 강도 고려. 메가급은 피크 때 3-4명도 갈아넣는다.")
-    pt_wage = st.number_input("스태프 실질 시급 (주휴+퇴직금리스크 반영)", 9860, 20000, 12500, key="pt_wage")
+    owner_work = st.slider(f"가맹점주 상주시간 (일 기준, 총 {work_hrs}H 중)", min_value=0, max_value=16, key="owner_hrs")
+    alba_count = st.slider("동시 근무 매니저/스태프 수 비율", min_value=0.5, max_value=4.0, step=0.5, key="alba_count", help="피크타임 샷 뽑는 노동 강도 고려. 메가급은 피크 때 3-4명도 갈아넣는다.")
+    pt_wage = st.number_input("스태프 실질 시급 (주휴+퇴직금리스크 반영)", min_value=9860, max_value=20000, key="pt_wage")
     
     st.markdown("💸 **[오퍼레이션 정부지원 영끌]**")
     gov_job_subsidy = st.checkbox("청년일자리도약장려금 (스태프 1인당 월 인건비 보조)", value=False, help="2026년 기준 6개월 채용 유지 시 월 최대 60만원 인건비 보조율 삭감 적용.")
     gov_voucher = st.checkbox("소상공인 경영안정 바우처 (전기세 등 유지비 차감)", value=False, help="연 25만 원 상당의 경영 고정비 바우처를 월 단위 공과금에서 선차감한다.")
 
     st.markdown("🚨 **[운영 리스크 파라미터 (HR/CS/설비)]**")
-    black_consumer = st.slider("강성 클레임 & 서비스 환불 손실률 (%)", 0.0, 10.0, 2.5, step=0.1, key="black_consumer") / 100.0
-    alba_run = st.number_input("인력 이탈 OJT 매몰비용 (구인/교육/결근 월 만원)", 0, 100, 15, key="alba_run")
+    black_consumer = st.slider("강성 클레임 & 서비스 환불 손실률 (%)", min_value=0.0, max_value=10.0, step=0.1, key="black_consumer") / 100.0
+    alba_run = st.number_input("인력 이탈 OJT 매몰비용 (구인/교육/결근 월 만원)", min_value=0, max_value=100, key="alba_run")
     machine_fail = st.number_input("에스프레소 머신/제빙기 등 설비 감가상각 (월 만원)", 0, 80, 15)
     
     st.divider()
@@ -128,8 +136,8 @@ with st.sidebar:
     my_cash = st.number_input("순수 자기 자본 (만원)", 0, 200000, 5000, step=1000)
     
     st.markdown("💸 **[2026년 소진공/중진공 정책자금 영끌]**")
-    gov_subsidy = st.slider("중소벤처기업부 예비창업패키지 등 무상지원금 (상환X, 만원)", 0, 10000, 0, step=500, key="gov_subsidy", help="2026년 예창패 등 청년 지원 평균 4,700만원. 갚지 않아도 되는 순수 국비 지원액.")
-    use_youth_loan = st.checkbox("중소벤처기업진흥공단(중진공): 청년전용창업자금 대출 (최대 1억, 연 2.5% 고정)", value=False, key="use_youth_loan")
+    gov_subsidy = st.slider("중소벤처기업부 예비창업패키지 등 무상지원금 (상환X, 만원)", min_value=0, max_value=10000, step=500, key="gov_subsidy", help="2026년 예창패 등 청년 지원 평균 4,700만원. 갚지 않아도 되는 순수 국비 지원액.")
+    use_youth_loan = st.checkbox("중소벤처기업진흥공단(중진공): 청년전용창업자금 대출 (최대 1억, 연 2.5% 고정)", key="use_youth_loan")
     use_sme_loan = st.checkbox("소상공인시장진흥공단(소진공): 일반경영안정자금 대출 (최대 7천만, 기본금리 -0.5%p 우대)", value=False)
     
     interest_rate_normal = st.number_input("1/2금융권 일반 사업자 대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
