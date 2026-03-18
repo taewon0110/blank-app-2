@@ -198,6 +198,34 @@ with c2:
     fig_heat.update_layout(height=380, paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#e4e4e7"))
     st.plotly_chart(fig_heat, use_container_width=True)
 
+st.divider()
+
+st.markdown("### 💊 T-Protocol 생존 처방전: 수익률 강제 심폐소생술")
+st.caption("니가 세팅한 데이터를 바탕으로 뽑아낸 팩트 기반 생존 전략이다. 피눈물 흘리기 전에 당장 실행해라.")
+
+suggestions = []
+if monthly_rev > 0:
+    if (rent*10000) / monthly_rev > 0.15:
+        suggestions.append(f"🩸 **월세의 저주 ({rent*10000/monthly_rev*100:.1f}%)**: 매출의 15% 이상이 건물주 주머니로 간다. 배달 비중을 획기적으로 늘려서 좁은 매장 회전율을 쥐어짜내거나, 당장 보증금 빼서 B급 상권으로 도망가라.")
+        
+    if material_ratio > 0.35:
+        suggestions.append(f"🩸 **원가율 폭발 ({material_ratio*100:.1f}%)**: 음료 팔아서 남 좋은 일만 시키고 있다. 프랜차이즈라면 본사 납품가 협상은 못 하니, 마진율 70%가 넘는 '원가 저렴한 베이커리(스콘/쿠키)' 세트 메뉴를 무조건 끼워팔아 객단가를 억지로 끌어올려라.")
+        
+    if delivery_ratio >= 0.30 and delivery_fee_ratio >= 0.20:
+        suggestions.append(f"🩸 **플랫폼의 노예 (배달수수료 {delivery_fee_ratio*100:.1f}%)**: 오토바이 배기음 들릴 때마다 니 돈이 날아간다. 홀 단골들한테 '쿠폰 도장 2배'나 '사이즈업' 뿌려서라도 오프라인 방문객 구성을 70% 이상으로 돌려놔야 적자 면한다.")
+        
+    if hidden_risk_cost > 500000:
+        suggestions.append(f"🩸 **멘탈 및 통장 누수 (숨겨진 손실 {int(hidden_risk_cost/10000)}만)**: 진상 환불과 알바 추노로 새는 돈만 막아도 원룸 월세가 나온다. 최저시급 딱 맞춰 후려치지 말고, 돈 조금 더 주더라도 '책임감 단단한 에이스 알바 1명'을 꽉 잡아두는 게 장기적으로 매달 100만 원 아끼는 길이다.")
+        
+    if owner_hourly_wage < pt_wage:
+         suggestions.append(f"🩸 **사장 무쓸모 노동 (니 시급 {int(owner_hourly_wage)}원)**: 알바 시급({pt_wage}원)보다 못한 돈 받고 14시간씩 서있는 건 미친 짓이다. 니가 매장에서 주문만 받을 게 아니라, 밖에서 B2B 대량 주문(주변 오피스 정기배달 등)을 뚫어오거나 SNS 마케팅에 그 시간을 쏟아라.")
+
+if not suggestions:
+    suggestions.append("💡 **현재 지표 방어율 양호**: 수익 구조상 치명적인 누수는 보이지 않는다. 다만 이건 시뮬레이터 수치일 뿐, 며칠 장마 오거나 바로 옆에 '저가커피(메가커피 등)' 들어오면 바로 나락 가는 게 현실이다. 흑자 날 때 무조건 현금부터 모아둬라.")
+
+for idx, sugg in enumerate(suggestions):
+    st.markdown(f'<div style="background:#1f191a; padding:15px; border-left:4px solid #f43f5e; margin-bottom:10px; border-radius:4px;">{sugg}</div>', unsafe_allow_html=True)
+
 st.markdown("""
 <br>
 <div style="text-align:right; color:#71717a; font-size:0.8rem;">
