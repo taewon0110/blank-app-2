@@ -141,7 +141,8 @@ if net_profit < 0:
         <div class="fact-title">🚨 폐업각. 장사할수록 빛의 속도로 파산 중 🚨</div>
         <div class="fact-text">매달 <b>{int(abs(net_profit)/10000):,}만 원</b>을 알바와 배달앱 배불리는 데 갖다 바치고 있다. 
         알바 대타 뛰다가 허리 나가고, 기계 고장 날 때 멘탈 터지면 이미 늦는다. 
-        당장 월세 깎거나 빚내서 버티는 희망회로 집어치우고 사업 아예 갈아엎어라. 여기 지옥이다.</div>
+        당장 월세 깎거나 빚내서 버티는 헛된 망상 집어치우고 사업 구조를 아예 갈아엎어라. 여기 지옥이다.<br><br>
+        <span style="color:#34d399;"><b>🌱 [T-Protocol 한 줄기 희망]</b> 하지만 아직 포기하진 마라. 바닥을 쳤다면 올라갈 일만 남았다. 하단의 '생존 처방전'을 하나씩 독하게 실행해서 지출 누수부터 틀어막아라. 살아남는 놈이 강한 거다!</span></div>
     </div>""", unsafe_allow_html=True)
 elif owner_hourly_wage < pt_wage:
     st.markdown(f"""<div class="fact-box" style="border-color:#fbbf24;">
@@ -152,12 +153,20 @@ elif owner_hourly_wage < pt_wage:
     </div>""", unsafe_allow_html=True)
 else:
     months_to_rec = (total_startup * 10000) / net_profit
-    st.markdown(f"""<div class="fact-box" style="border-color:#4ade80;">
-        <div class="fact-title">✅ 생존했지만 지옥을 걷는 중 ✅</div>
-        <div class="fact-text">숨통 트이는 <b>{int(net_profit/10000):,}만 원</b> 벌이는 했다. 근데 넌 이걸 벌기 위해 
-        진상 환불로 매달 <b>{int(black_consumer_loss/10000):,}만 원</b> 손해 보고, 알바 관리와 기계 수리에 쓴 <b>{(alba_run+machine_fail):,}만 원</b>의 피로도를 견뎠다. 
-        원금 {total_startup:,}만 원 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b> 걸린다. 그 전에 인테리어 질려서 손님 끊기는 데 100원 건다. 정신 바짝 차려라.</div>
-    </div>""", unsafe_allow_html=True)
+    if net_profit >= 10000000 or months_to_rec <= 24:
+        st.markdown(f"""<div class="fact-box" style="border-color:#3b82f6;">
+            <div class="fact-title">🎉 신계 강림! 창업 천국 오신 걸 환영한다 🎉</div>
+            <div class="fact-text">매달 통장에 <b>{int(net_profit/10000):,}만 원</b>씩 꽂힌다! 니 시급은 무려 <b>{int(owner_hourly_wage):,}원</b>, 대기업 임원 안 부러운 수준이다. 
+            진상들이 <b>{int(black_consumer_loss/10000):,}만 원</b>어치 환불 러시를 하든 말든, 
+            초기 빚 <b>{total_startup:,}만 원</b> 갚는 데 고작 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>밖에 안 걸린다. 이대로만 유지해서 빌딩 올려라!</div>
+        </div>""", unsafe_allow_html=True)
+    else:
+        st.markdown(f"""<div class="fact-box" style="border-color:#4ade80;">
+            <div class="fact-title">✅ 생존했지만 살얼음판 걷는 중 ✅</div>
+            <div class="fact-text">숨통 트이는 <b>{int(net_profit/10000):,}만 원</b> 벌이는 했다. 근데 넌 이걸 벌기 위해 
+            진상 환불로 매달 <b>{int(black_consumer_loss/10000):,}만 원</b> 손해 보고, 알바 관리와 기계 수리에 쓴 <b>{(alba_run+machine_fail):,}만 원</b>의 스트레스를 견뎠다. 
+            원금 {total_startup:,}만 원 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b> 걸린다. 그 전에 인테리어 질려서 손님 끊기는 데 100원 건다. 방심하지 말고 돈 모아라.</div>
+        </div>""", unsafe_allow_html=True)
 
 c1, c2 = st.columns([1, 1.2])
 
