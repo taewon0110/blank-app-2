@@ -62,30 +62,35 @@ with st.sidebar:
             "loc_sel": "B급 (오피스/대학가)", "area": 15, "unit_price": 5000, 
             "mat_ratio": 35, "del_ratio": 20, "owner_hrs": 10, "alba_count": 1.5,
             "pt_wage": 12500, "black_consumer": 2.5, "alba_run": 15,
-            "gov_subsidy": 0, "use_youth_loan": False
+            "gov_subsidy": 0, "use_youth_loan": False,
+            "dep": 2250, "kwon": 1500, "rent": 150
         })
         
     def apply_preset():
         p = st.session_state.preset_radio
         if "1%" in p:
-            # A급 번화가 15평, 알바 최소화(1명), 점주 주도 오퍼레이션, 정부지원 풀 활용
             st.session_state.loc_sel = "A급 (번화가)"
             st.session_state.area = 15
+            st.session_state.dep  = int(LOCATIONS["A급 (번화가)"]["보증금평당"] * st.session_state.area)   # A급 보증금
+            st.session_state.kwon = int(LOCATIONS["A급 (번화가)"]["권리금평당"] * st.session_state.area)   # A급 권리금
+            st.session_state.rent = int(LOCATIONS["A급 (번화가)"]["월세평당"] * st.session_state.area)   # A급 월세
             st.session_state.unit_price = 5500
             st.session_state.mat_ratio = 30
             st.session_state.del_ratio = 0
-            st.session_state.owner_hrs = 12   # 점주 12시간 풀매대 전담
-            st.session_state.alba_count = 1.0 # 알바 최소 1명 유지
+            st.session_state.owner_hrs = 12
+            st.session_state.alba_count = 1.0
             st.session_state.pt_wage = 14000
             st.session_state.black_consumer = 0.5
             st.session_state.alba_run = 0
             st.session_state.gov_subsidy = 4500
             st.session_state.use_youth_loan = True
         elif "평균" in p:
-            # S급 메인상권에 들어갔지만 수익 안 나는 구조
-            # 점주 16시간 뼈 갈리는데 오너 시급 < 최저임금 → 진짜 워킹푸어
+            # S급 메인상권 투입 후 임대료+배달수수료+인건비에 치여 오너 시급 < 최저임금
             st.session_state.loc_sel = "S급 (메인상권)"
             st.session_state.area = 10
+            st.session_state.dep  = int(LOCATIONS["S급 (메인상권)"]["보증금평당"] * st.session_state.area)   # S급 보증금
+            st.session_state.kwon = int(LOCATIONS["S급 (메인상권)"]["권리금평당"] * st.session_state.area)   # S급 권리금 (애샨에 날릴 확률 높음)
+            st.session_state.rent = int(LOCATIONS["S급 (메인상권)"]["월세평당"] * st.session_state.area)   # S급 월세 250만
             st.session_state.unit_price = 2500   # 아이스 아메리카노 단일 저객단가
             st.session_state.mat_ratio = 40       # 로스율 포함 원가 40%
             st.session_state.del_ratio = 60       # 배달 외형만 불리기 60%
@@ -108,9 +113,9 @@ with st.sidebar:
     area = st.number_input("매장 평수", min_value=10, max_value=100, key="area")
     loc = LOCATIONS[loc_sel]
     
-    dep = st.number_input("보증금 (만원)", 0, 100000, int(loc['보증금평당']*area), step=100)
-    kwon = st.number_input("바닥/영업 권리금 (만원) - 날릴 확률 농후", 0, 50000, int(loc['권리금평당']*area), step=100)
-    rent = st.number_input("월세 (만원) - 비가 오나 눈이 오나 나감", 0, 5000, int(loc['월세평당']*area), step=10)
+    dep = st.number_input("보증금 (만원)", min_value=0, max_value=100000, step=100, key="dep")
+    kwon = st.number_input("바닥/영업 권리금 (만원) - 날릴 확률 농후", min_value=0, max_value=50000, step=100, key="kwon")
+    rent = st.number_input("월세 (만원) - 비가 오나 눈이 오나 나감", min_value=0, max_value=5000, step=10, key="rent")
     
     st.divider()
     st.header("2️⃣ 매출 볼륨 및 원가 구조 (COGS)")
