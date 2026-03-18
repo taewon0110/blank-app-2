@@ -34,8 +34,8 @@ h3 { margin-top: 1.5rem; }
 
 st.markdown("""
 <div class="header-tprot">
-    <h1 style="color:#f87171; margin:0;">💀 T-Protocol 카페 창업 생존 지옥편</h1>
-    <p style="color:#fca5a5; margin-top:5px; font-weight:500;">프차 컨설턴트들이 절대 말 안 하는 진상, 기계 고장, 알바 추노 리스크까지 전부 숫자로 때려 박았다. 멘탈 꽉 잡아라.</p>
+    <h1 style="color:#f87171; margin:0;">💀 T-Protocol: 저가커피 프랜차이즈 창업 실전 재무 진단기</h1>
+    <p style="color:#fca5a5; margin-top:5px; font-weight:500;">프랜차이즈 본사 영업사원은 절대 말해주지 않는 가맹점 실질 수익률(Margin)과 단위경제학(Unit Economics) 팩트 체크.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -48,7 +48,7 @@ LOCATIONS = {
 }
 
 with st.sidebar:
-    st.header("1️⃣ 점포 뼈대 세팅")
+    st.header("1️⃣ 입지 및 투자비용 (CAPEX)")
     loc_sel = st.selectbox("상권 수준 (현실 파악부터)", list(LOCATIONS.keys()), index=2)
     area = st.number_input("매장 평수", 10, 100, 15)
     loc = LOCATIONS[loc_sel]
@@ -58,30 +58,30 @@ with st.sidebar:
     rent = st.number_input("월세 (만원) - 비가 오나 눈이 오나 나감", 0, 5000, int(loc['월세평당']*area), step=10)
     
     st.divider()
-    st.header("2️⃣ 매출 허상과 실체")
-    unit_price = st.number_input("예상 평균 객단가 (원)", 2000, 20000, 6000, step=500)
-    material_ratio = st.slider("기본 원가율 (%) + 우유 버리는 건 덤", 15, 60, 35) / 100.0
-    delivery_ratio = st.slider("배달 비중 (%) - 할수록 적자", 0, 80, 30) / 100.0
-    delivery_fee_ratio = st.slider("배달앱 삥뜯는 수수료 (%)", 10, 50, 30) / 100.0
+    st.header("2️⃣ 매출 볼륨 및 원가 구조 (COGS)")
+    unit_price = st.number_input("예상 평균 객단가 (원)", 2000, 20000, 5000, step=500, help="저가커피는 아메리카노 1500~2000원이지만, 디저트/에이드 묶어파는 평균 객단가를 입력해라.")
+    material_ratio = st.slider("원부자재 원가율 (%) - 본사 필수물대 포함", 15, 60, 35) / 100.0
+    delivery_ratio = st.slider("배달 비중 (%) - 할수록 역마진 직행", 0, 80, 20) / 100.0
+    delivery_fee_ratio = st.slider("배달 플랫폼 수수료 및 부대비용 (%)", 10, 50, 25) / 100.0
     
     st.divider()
-    st.header("3️⃣ 인간 갈아넣기 & 지옥의 변수")
+    st.header("3️⃣ 오퍼레이션 및 리스크 제어")
     work_hrs = 14
-    owner_work = st.slider(f"사장 매장 상주시간 (일 기준, 총 {work_hrs}H 중)", 0, 16, 10)
-    alba_count = st.slider("동시 근무 알바 수 (피크타임 대비 비율)", 0.5, 4.0, 1.5, step=0.5, help="1.0이면 항상 1명이 매장을 지킴. 2.0이면 알바 2명이서 14시간 내내 풀가동.")
-    pt_wage = st.number_input("알바 시급 (원, 주휴+퇴직금리스크 반영)", 9860, 20000, 12500)
+    owner_work = st.slider(f"가맹점주 상주시간 (일 기준, 총 {work_hrs}H 중)", 0, 16, 10)
+    alba_count = st.slider("동시 근무 매니저/스태프 수 비율", 0.5, 4.0, 1.5, step=0.5, help="피크타임 샷 뽑는 노동 강도 고려. 메가급은 피크 때 3-4명도 갈아넣는다.")
+    pt_wage = st.number_input("스태프 실질 시급 (주휴+퇴직금리스크 반영)", 9860, 20000, 12500)
     
-    st.markdown("🚨 **[숨겨진 현실 리스크 파라미터]**")
-    black_consumer = st.slider("진상 손님 (환불/재결제/서비스 요구 비율 %)", 0.0, 10.0, 2.5, step=0.1) / 100.0
-    alba_run = st.number_input("알바 추노 손실 (월 / 무단결근 땜빵급여, 구인광고 등 만원)", 0, 100, 15)
-    machine_fail = st.number_input("머신 잔고장/정수필터/에어컨 유지보수 (월 만원)", 0, 80, 10)
+    st.markdown("🚨 **[운영 리스크 파라미터 (HR/CS/설비)]**")
+    black_consumer = st.slider("강성 클레임 & 서비스 환불 손실률 (%)", 0.0, 10.0, 2.5, step=0.1) / 100.0
+    alba_run = st.number_input("인력 이탈 OJT 매몰비용 (구인/교육/결근 월 만원)", 0, 100, 15)
+    machine_fail = st.number_input("에스프레소 머신/제빙기 등 설비 감가상각 (월 만원)", 0, 80, 15)
     
     st.divider()
-    st.header("4️⃣ 대출 (빚쟁이 스타트)")
-    my_cash = st.number_input("내 쌩돈 (만원)", 0, 200000, 5000, step=1000)
+    st.header("4️⃣ 자본 레버리지 (금융 비용)")
+    my_cash = st.number_input("자기 자본 (만원)", 0, 200000, 5000, step=1000)
     interest_rate = st.number_input("대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
 
-# ── 초기비용 ──
+# ── 초기투자 (CAPEX) ──
 int_cost = loc['인테리어'] * area
 machine_cost = 2500 
 etc_start_cost = 1000 
@@ -138,34 +138,34 @@ st.markdown("---")
 # T-Protocol 핵심 재무 진단 (Fact Check)
 if net_profit < 0:
     st.markdown(f"""<div class="fact-box">
-        <div class="fact-title">🚨 데스 스파이럴(Death Spiral). 구조적 한계 도달 🚨</div>
-        <div class="fact-text">매월 <b>{int(abs(net_profit)/10000):,}만 원</b> 규모의 영속적 적자가 발생 중이다. 
-        현재의 배달플랫폼 수수료와 인건비 포화 상태로는 사장이 노동력을 극단적으로 투입해도 회복이 불가능하다. 
-        대출 회전율 상승이나 권리금 회수 같은 막연한 희망회로를 차단하고 당장 손절매(Loss Cut) 결단이 요구된다.<br><br>
-        <span style="color:#34d399;"><b>🌱 [T-Protocol 비상 대책]</b> 단, 매몰비용에 갇혀 완전히 이성을 잃지 않았다면 최하단의 '생존 처방전'을 기반으로 즉각적인 고강도 체질 개선과 영업방식 재편을 밀어붙여라. 숫자는 거짓말을 하지 않는다.</span></div>
+        <div class="fact-title">🚨 데스 스파이럴(Death Spiral) 진입. 구조적 파산 카운트다운 🚨</div>
+        <div class="fact-text">매월 <b>{int(abs(net_profit)/10000):,}만 원</b>의 치명적 캐시번(Cash Burn)이 발생 중이다. 
+        저가커피 씬에서 박리다매가 무너지면서 본사 물대와 배달앱 수수료만 감당하다가 점주가 말라죽는 전형적인 폐업 루트를 밟았다. 
+        대출 돌려막기 같은 희망회로는 당장 접고, 긴급 메뉴 구조조정과 다운사이징 혹은 매장 양도(손절매)를 결단해라.<br><br>
+        <span style="color:#34d399;"><b>🌱 [T-Protocol 비상 대책]</b> 단, 매몰비용이 아까워 돌이킬 수 없다면 당장 하단의 '비상 경영 처방전'을 읽고 피 흐르는 혈관부터 묶어라. 냉정한 메타인지가 생존의 시작이다.</span></div>
     </div>""", unsafe_allow_html=True)
 elif owner_hourly_wage < pt_wage:
     st.markdown(f"""<div class="fact-box" style="border-color:#fbbf24;">
-        <div class="fact-title">⚠️ 워킹푸어형 좀비 기업. 실질 기회비용 마이너스 ⚠️</div>
-        <div class="fact-text">월 <b>{owner_monthly_hours}시간</b>의 오너 노동력을 투입하고도 확보한 순수익은 <b>{int(net_profit/10000):,}만 원</b>에 불과하다. 
-        최종 실질 수익 파이프라인 대비 시급이 <b>{int(owner_hourly_wage):,}원</b>으로 일반 파트타이머(기본급 {pt_wage}원)보다 못한 최악의 자영업 함정에 빠졌다. 
-        비즈니스 시스템이 아닌 점주의 육체노동 점거율에 단일 의존하는 전형적인 '자기 고용 노예' 상태다. 즉시 구조 개선이 시급하다.</div>
+        <div class="fact-title">⚠️ 한계 기업 상태. 점주 노동력 착취(워킹푸어)를 통한 강제 흑자 ⚠️</div>
+        <div class="fact-text">월 <b>{owner_monthly_hours}시간</b>의 오너 노동력을 갈아넣어 간신히 맞춘 순이익이 <b>{int(net_profit/10000):,}만 원</b>이다. 
+        프랜차이즈가 자랑하는 뛰어난 가성비를 점주의 피와 땀으로 메우고 있다. 오너 실질 시급액 <b>{int(owner_hourly_wage):,}원</b>은 매대 닦는 알바(기본 {pt_wage}원)보다 못한 최악의 단가다. 
+        시스템이 일하게 만들지 못하면 넌 본사 배나 불려주는 고도화된 스팀 노예일 뿐이다. 당장 아웃바운드 세일즈나 판관비 조정에 들어가라.</div>
     </div>""", unsafe_allow_html=True)
 else:
     months_to_rec = (total_startup * 10000) / net_profit
     if net_profit >= 10000000 or months_to_rec <= 24:
         st.markdown(f"""<div class="fact-box" style="border-color:#3b82f6;">
-            <div class="fact-title">📈 최상위 캐시카우. 압도적 현금창출력 확보 📈</div>
-            <div class="fact-text">월 순수익 <b>{int(net_profit/10000):,}만 원</b>, 오너 실질 시급 <b>{int(owner_hourly_wage):,}원</b>. 투자 대비 수익률(ROI) 최상위 구간에 완벽하게 안착했다. 
-            CS 컴플레인 리스크(월 <b>{int(black_consumer_loss/10000):,}만 원</b> 손실)와 영업상 통상 감가상각을 모두 맞고도 
-            초기 총투입 자본금 <b>{total_startup:,}만 원</b> 전액 회수에 고작 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이 소요된다. 현재의 비즈니스 해자를 기반으로 스케일업(다점포 전개 및 법인화)을 최우선 검토해라.</div>
+            <div class="fact-title">📈 엑설런트 박리다매! 압도적 볼륨(Volume) 강점 확보 📈</div>
+            <div class="fact-text">저가형 프랜차이즈의 로망인 '터지는 회전율'을 달성했다. 월 순수익 <b>{int(net_profit/10000):,}만 원</b>에 투자금 <b>{total_startup:,}만 원</b> 회수율 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이라는 메가급 초고속 캐시카우를 구축했다. 
+            진상 고객 한두 명(월 <b>{int(black_consumer_loss/10000):,}만 원</b> 손실)이나 알바 교체비용 정도는 거뜬히 씹어먹는 규모의 경제를 입증했다. 
+            현재 시스템과 인적 자원을 고도화시켜 인근 상권에 2호점 출점(다점포 전개)을 준비하는 등 자본 스케일업을 도모해라!</div>
         </div>""", unsafe_allow_html=True)
     else:
         st.markdown(f"""<div class="fact-box" style="border-color:#4ade80;">
-            <div class="fact-title">✅ 영업 흑자 달성. 자본 회수(ROI) 진행 중 ✅</div>
-            <div class="fact-text">월 순수익 <b>{int(net_profit/10000):,}만 원</b>으로 운영수익 흑자 방어선을 뚫어냈다. 
-            그러나 악성고객 방어 한계(추정액 <b>{int(black_consumer_loss/10000):,}만 원</b>) 및 HR/설비 돌발 변수(월 <b>{(alba_run+machine_fail):,}만 원</b>) 등 리퀴디티(유동성) 타격 팩터가 잔존한다. 
-            현 런레이트 기준 전액 투자금 <b>{total_startup:,}만 원</b> 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이 추산된다. 경제 불황이나 동종업 진입에 대비해 잉여 유보금(Cash Reserve) 조기 편성에 집중해라.</div>
+            <div class="fact-title">✅ 영업이익권 진입 완료. 운영 최적화(Optimization) 방어전 돌입 ✅</div>
+            <div class="fact-text">치열한 마진 싸움 끝에 <b>{int(net_profit/10000):,}만 원</b>의 영업 흑자 방어선을 뚫어냈다. 
+            그러나 박리다매 구조에서 가장 무서운 건 슬로우 시즌 타격이나 예기치 못한 제빙기 고장(월 <b>{(alba_run+machine_fail):,}만 원</b> 소요) 같은 유동성 변수다. 
+            현재 수익 흐름 기준 초기 자본금 <b>{total_startup:,}만 원</b> 완전 회수까지 <b>{months_to_rec/12:.1f}년 ({int(months_to_rec)}개월)</b>이 예상된다. 경쟁 저가 커피 브랜드 기습 입점에 대비해 내부 사내유보금을 즉시 쌓아라.</div>
         </div>""", unsafe_allow_html=True)
 
 c1, c2 = st.columns([1, 1.2])
@@ -217,27 +217,27 @@ strategies = [
     {
         "trigger": monthly_rev > 0 and (rent*10000) / monthly_rev > 0.15,
         "title": f"임대료 임계치 초과 (Rent Burden: 현재 {rent*10000/max(monthly_rev,1)*100:.1f}%)",
-        "text": "매출의 15% 이상이 고정 임대료로 소진되고 있다. 오프라인 회전율 한계를 배달/포장의 타겟팅 변경 투입으로 상쇄하거나, 수익성 중심의 B급 상권으로 즉각 상가 다운사이징(Downsizing)을 추진해라."
+        "text": "매출의 15% 이상이 고정 임대료로 소진되고 있다. 저단가 음료 씬에서는 '회전율이 곧 상가 월세'다. 매장 앞 키오스크로 워크인 고객 대기시간을 압축시켜 단위시간당 트래픽을 극대화하거나, 수익성 중심의 소형 테이크아웃 전용 B급 상권으로 상가 다운사이징(Downsizing)을 즉시 추진해라."
     },
     {
         "trigger": material_ratio > 0.35,
         "title": f"원부자재 코스트 과부하 (COGS: 현재 {material_ratio*100:.1f}%)",
-        "text": "프랜차이즈 종속 또는 자체 레시피 과소비로 마진이 붕괴됐다. 객단가 인상 및 마진율 최적화율 70% 이상인 하이엔드/저단가 디저트류 결합 프로모션 전개를 통한 판매단가 재조립(Re-pricing) 로직이 도입되어야 한다."
+        "text": "저가커피의 치명타인 본사 필수 물대 비중이 너무 높거나, 무분별한 레시피 로스(얼음/우유 폐기)로 마진이 붕괴됐다. 객단가 방어가 절급한 상태이므로 마진율이 60~70% 이상 보장되는 베이커리/마카롱 등의 고마진 사이드 메뉴 끼워팔기(Cross-selling) 프로모션을 매대에 강제 세팅해라."
     },
     {
         "trigger": delivery_ratio >= 0.30 and delivery_fee_ratio >= 0.20,
-        "title": f"배달 채널 수익잠식 (Platform Dependency: 플랫폼 종속비용 {delivery_fee_ratio*100:.1f}%)",
-        "text": "매출 외형만 팽창하고 실질 영업이익은 딜리버리 수수료 명목하에 전액 흡수당하고 있다. 자사 멤버십(LTV) 프로모션 강화를 통해 워크인(Walk-in) 및 매장형 방문객 포지션을 강제로 70% 대역까지 끌어올리는 채널 자립 락인(Lock-in) 전략을 당장 시현해라."
+        "title": f"배달 채널 수익잠식 (Platform Dependency: 플랫폼 종속률 {delivery_fee_ratio*100:.1f}%)",
+        "text": "저가 라인업 배달은 중개 수수료와 라이더 비용을 떼면 완벽한 역마진(적자) 산업이다. 매출 외형만 팽창할 뿐 실이익은 제로에 수렴한다. 배달 최소주문금액을 대폭 상향시켜 건당 객단가를 맞추고, 자사 앱(멤버십 오더)을 통한 패스트패스 픽업 유도로 오프라인 기반 포지션을 70%까지 강제 락인(Lock-in) 시켜라."
     },
     {
         "trigger": hidden_risk_cost > 500000,
-        "title": f"운영/CS 리스크 관리 실패 (HR & CS Loss: 손실 누적액 최고 월 {int(hidden_risk_cost/10000)}만 도달)",
-        "text": "인력 교체에 따른 채용 및 OJT(교육) 매몰비용과 블랙컨슈머발 재화 소진율이 극위험 수위다. 코어 인력(Core HR)에게 근속 리텐션 보너스를 부여해 근본 이탈 원인을 통제하는 것이 잦은 이탈로 발생할 복수의 기회비용 소모를 끊어내는 가장 효율적인 레버리지다."
+        "title": f"운영 제반 리스크 관리 실패 (HR & CS Loss: 손실 누적 월 {int(hidden_risk_cost/10000)}만 도달)",
+        "text": "아메리카노 머신처럼 갈려나가는 저가형 브랜드 오퍼레이션 특성상, 잦은 인원 공백과 메뉴 클레임은 폭발적인 OJT(교육) 매몰비용을 발생시킨다. 초보 스태프를 갈아끼우는 문화를 버리고, 시급을 높여서라도 '음료 추출과 컴플레인 전담' 매니저급 에이스를 배치해 이탈 원인을 통제하는 것이 압도적으로 저렴한 레버리지다."
     },
     {
         "trigger": owner_hourly_wage < pt_wage,
-        "title": f"기회비용 상실형 구조 (Low ROI on Owner's Time: 실질 시급 단가 {int(owner_hourly_wage)}원)",
-        "text": f"오너 내부 노동 투입({owner_monthly_hours}시간) 대비 산출 가치가 시장 하한선(최저시준액 {pt_wage}원) 미만이다. 로컬 매대 방어를 스태프에게 전면 이관하고, 오너는 B2B 대량 납품 수주(인근 공단 제휴 등) 및 광역 마케팅 등 고부가가치 아웃바운드 업무 파이프라인 개설에 사활을 걸어라."
+        "title": f"기회비용 상실형 오퍼레이션 (Low Owner ROI: 점주 실질 시급 {int(owner_hourly_wage)}원)",
+        "text": f"오너가 샷 몇 십 잔 더 뽑아서 푼돈 아끼려다 월 {owner_monthly_hours}시간씩 매대에 묶여 체력만 고갈(최저임금 {pt_wage}원 미만 산출)시키고 있다. 저가커피 게임의 승패는 'B2B 볼륨'에 있다. 매장 로컬 운영은 파트타이머에게 일임하고, 점주는 당장 주변 오피스 밀집 구역이나 학원가로 튀어나가 대량 케이터링 정기 구독권(B2B)을 수주하는 아웃바운드 영업(Sales)에 사활을 걸어라."
     }
 ]
 
