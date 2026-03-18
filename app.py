@@ -90,17 +90,21 @@ with st.sidebar:
     st.header("4️⃣ 자본 레버리지 (정책자금 & 금융비용)")
     my_cash = st.number_input("순수 자기 자본 (만원)", 0, 200000, 5000, step=1000)
     
-    st.markdown("💸 **[2026년 정부 정책자금 영끌]**")
-    gov_subsidy = st.slider("정부 무상지원 사업화 자금 (상환X 순수지원, 만원)", 0, 10000, 0, step=500, help="2026년 예비창업패키지 등 청년 지원 평균 4,700만원. 갚지 않아도 되는 지원금액.")
-    use_youth_loan = st.checkbox("중진공 청년전용 창업자금 대출 리스크 헷징 (최대 1억, 연 2.5% 고정)", value=False)
+    st.markdown("💸 **[2026년 소진공/중진공 정책자금 영끌]**")
+    gov_subsidy = st.slider("중소벤처기업부 예비창업패키지 등 무상지원금 (상환X, 만원)", 0, 10000, 0, step=500, help="2026년 예창패 등 청년 지원 평균 4,700만원. 갚지 않아도 되는 순수 국비 지원액.")
+    use_youth_loan = st.checkbox("중소벤처기업진흥공단(중진공): 청년전용창업자금 대출 (최대 1억, 연 2.5% 고정)", value=False)
+    use_sme_loan = st.checkbox("소상공인시장진흥공단(소진공): 일반경영안정자금 대출 (최대 7천만, 기본금리 -0.5%p 우대)", value=False)
     
-    interest_rate_normal = st.number_input("1금융권/사업자 일반 대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
+    interest_rate_normal = st.number_input("1/2금융권 일반 사업자 대출 금리 (%)", 2.0, 15.0, 6.5, step=0.1) / 100.0
 
-# ── 초기투자 (CAPEX) ──
-int_cost = loc['인테리어'] * area
-machine_cost = 2500 
-etc_start_cost = 1000 
-total_startup = dep + kwon + int_cost + machine_cost + etc_start_cost
+# ── 초기투자 (CAPEX: 메가커피 가맹 가이드라인 반영) ──
+franchise_fee = 1000 # 본사 가맹비
+edu_fee = 500 # 본사 교육비 및 OJT
+contract_dep = 200 # 계약이행보증금
+int_cost = loc['인테리어'] * area # 평당 인테리어 (철거, 전기증설, 냉난방 별도공사 포함)
+machine_cost = 4000 # 고급 에스프레소 머신, 그라인더, 제빙기, 블렌더 등 기기설비
+sign_etc_cost = 1000 # 내외부 간판(사인물), DID 메뉴보드, 키오스크 설치비 등
+total_startup = dep + kwon + franchise_fee + edu_fee + contract_dep + int_cost + machine_cost + sign_etc_cost
 total_funds_needed = max(0, total_startup - my_cash - gov_subsidy)
 
 # ── 연산 ──
@@ -125,14 +129,16 @@ job_subsidy_amount = min(monthly_labor_raw, hired_staff * 600000) if gov_job_sub
 monthly_labor = monthly_labor_raw - job_subsidy_amount
 
 # 고정 & 현실 반영 변동비
-if use_youth_loan:
-    youth_loan_amt = min(total_funds_needed, 10000) 
-    normal_loan_amt = max(0, total_funds_needed - 10000)
-    monthly_interest = (youth_loan_amt * 0.025 / 12 * 10000) + (normal_loan_amt * interest_rate_normal / 12 * 10000)
-    loan_amt = youth_loan_amt + normal_loan_amt
-else:
-    monthly_interest = total_funds_needed * interest_rate_normal / 12 * 10000
-    loan_amt = total_funds_needed
+youth_loan_amt = min(total_funds_needed, 10000) if use_youth_loan else 0
+rem_after_youth = max(0, total_funds_needed - youth_loan_amt)
+
+sme_loan_amt = min(rem_after_youth, 7000) if use_sme_loan else 0
+normal_loan_amt = max(0, rem_after_youth - sme_loan_amt)
+
+sme_interest_rate = max(0, interest_rate_normal - 0.005) # 소진공 -0.5% 금리 우대 반영
+
+monthly_interest = (youth_loan_amt * 0.025 / 12 * 10000) + (sme_loan_amt * sme_interest_rate / 12 * 10000) + (normal_loan_amt * interest_rate_normal / 12 * 10000)
+loan_amt = youth_loan_amt + sme_loan_amt + normal_loan_amt
 
 utility_raw = area * 60000 
 utility = max(0, utility_raw - (250000 / 12)) if gov_voucher else utility_raw
